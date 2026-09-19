@@ -62,6 +62,10 @@ Then, for Docker: `cp .env.example .env` (repo root) and set
 For running without Docker: `export GOOGLE_BOOKS_API_KEY=your_key` before
 starting the backend.
 
+The Google Books API base URL is also configurable via `GOOGLE_BOOKS_BASE_URL`
+(defaults to `https://www.googleapis.com/books/v1/volumes` if unset) — same
+`.env` file for Docker, or `export GOOGLE_BOOKS_BASE_URL=...` otherwise.
+
 ## Running without Docker
 
 Requires Node.js 20+.

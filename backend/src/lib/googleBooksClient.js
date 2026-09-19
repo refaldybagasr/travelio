@@ -1,4 +1,4 @@
-const GOOGLE_BOOKS_BASE_URL = 'https://www.googleapis.com/books/v1/volumes';
+const DEFAULT_GOOGLE_BOOKS_BASE_URL = 'https://www.googleapis.com/books/v1/volumes';
 
 class GoogleBooksError extends Error {}
 
@@ -21,10 +21,11 @@ async function searchBooks({
   maxResults,
   fetchImpl = fetch,
   apiKey = process.env.GOOGLE_BOOKS_API_KEY,
+  baseUrl = process.env.GOOGLE_BOOKS_BASE_URL || DEFAULT_GOOGLE_BOOKS_BASE_URL,
 }) {
   const params = new URLSearchParams({ q, startIndex, maxResults });
   if (apiKey) params.set('key', apiKey);
-  const url = `${GOOGLE_BOOKS_BASE_URL}?${params}`;
+  const url = `${baseUrl}?${params}`;
 
   let response;
   try {
