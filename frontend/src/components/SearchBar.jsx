@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
-export default function SearchBar({ onSearch }) {
-  const [value, setValue] = useState('');
+export default function SearchBar({ onSearch, initialValue = '' }) {
+  const [value, setValue] = useState(initialValue);
 
   function handleSubmit(e) {
     e.preventDefault();

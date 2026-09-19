@@ -6,15 +6,20 @@ import { searchBooks, getFavorites, addFavorite, removeFavorite } from '../api/c
 
 const PAGE_SIZE = 20;
 
-export default function SearchPage() {
-  const [items, setItems] = useState([]);
-  const [totalItems, setTotalItems] = useState(0);
+export default function SearchPage({
+  query,
+  setQuery,
+  items,
+  setItems,
+  totalItems,
+  setTotalItems,
+  nextIndex,
+  setNextIndex,
+}) {
   const [loading, setLoading] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState(null);
-  const [query, setQuery] = useState('');
   const [favoritedIds, setFavoritedIds] = useState(new Set());
-  const [nextIndex, setNextIndex] = useState(0);
 
   useEffect(() => {
     getFavorites()
@@ -85,7 +90,7 @@ export default function SearchPage() {
 
   return (
     <div>
-      <SearchBar onSearch={handleSearch} />
+      <SearchBar onSearch={handleSearch} initialValue={query} />
       {error && (
         <div className="flex items-center gap-3 mb-4">
           <p className="text-red-600">{error}</p>
