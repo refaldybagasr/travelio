@@ -120,4 +120,34 @@ describe('searchBooks', () => {
 
     expect(capturedUrl).not.toContain('key=');
   });
+
+  it('uses the provided base URL when given', async () => {
+    let capturedUrl;
+    const fetchImpl = async (url) => {
+      capturedUrl = url;
+      return { ok: true, json: async () => ({ totalItems: 0, items: [] }) };
+    };
+
+    await searchBooks({
+      q: 'test',
+      startIndex: 0,
+      maxResults: 20,
+      fetchImpl,
+      baseUrl: 'https://example.com/custom-books-endpoint',
+    });
+
+    expect(capturedUrl.startsWith('https://example.com/custom-books-endpoint?')).toBe(true);
+  });
+
+  it('defaults to the real Google Books endpoint when no base URL is provided', async () => {
+    let capturedUrl;
+    const fetchImpl = async (url) => {
+      capturedUrl = url;
+      return { ok: true, json: async () => ({ totalItems: 0, items: [] }) };
+    };
+
+    await searchBooks({ q: 'test', startIndex: 0, maxResults: 20, fetchImpl, baseUrl: undefined });
+
+    expect(capturedUrl.startsWith('https://www.googleapis.com/books/v1/volumes?')).toBe(true);
+  });
 });
