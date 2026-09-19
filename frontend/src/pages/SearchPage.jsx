@@ -1,11 +1,16 @@
 import { useState, useEffect } from 'react';
 import SearchBar from '../components/SearchBar';
 import BookCard from '../components/BookCard';
+import LoadMoreButton from '../components/LoadMoreButton';
 import { searchBooks, getFavorites, addFavorite, removeFavorite } from '../api/client';
+
+const PAGE_SIZE = 20;
 
 export default function SearchPage() {
   const [items, setItems] = useState([]);
+  const [totalItems, setTotalItems] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState(null);
   const [query, setQuery] = useState('');
   const [favoritedIds, setFavoritedIds] = useState(new Set());
@@ -21,12 +26,27 @@ export default function SearchPage() {
     setLoading(true);
     setError(null);
     try {
-      const data = await searchBooks(q, 0, 20);
+      const data = await searchBooks(q, 0, PAGE_SIZE);
       setItems(data.items);
+      setTotalItems(data.totalItems);
     } catch (err) {
       setError(err.message);
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function handleLoadMore() {
+    setLoadingMore(true);
+    setError(null);
+    try {
+      const data = await searchBooks(query, items.length, PAGE_SIZE);
+      setItems((prev) => [...prev, ...data.items]);
+      setTotalItems(data.totalItems);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoadingMore(false);
     }
   }
 
@@ -82,6 +102,9 @@ export default function SearchPage() {
           />
         ))}
       </div>
+      {items.length > 0 && items.length < totalItems && (
+        <LoadMoreButton onClick={handleLoadMore} loading={loadingMore} />
+      )}
     </div>
   );
 }
