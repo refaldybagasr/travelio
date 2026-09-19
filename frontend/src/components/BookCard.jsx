@@ -1,3 +1,5 @@
+import StarRating from './StarRating';
+
 export default function BookCard({ book, isFavorited, onToggleFavorite }) {
   return (
     <div className="bg-white rounded-lg shadow-sm p-4 flex gap-4">
@@ -9,6 +11,9 @@ export default function BookCard({ book, isFavorited, onToggleFavorite }) {
       <div className="flex-1 flex flex-col">
         <h3 className="font-semibold text-gray-900">{book.title}</h3>
         <p className="text-sm text-gray-500">{book.authors.join(', ') || 'Unknown author'}</p>
+        <div className="mt-2">
+          <StarRating averageRating={book.averageRating} ratingsCount={book.ratingsCount} />
+        </div>
         <button
           onClick={() => onToggleFavorite(book)}
           className="mt-auto self-start text-sm font-medium text-red-500 hover:text-red-700"
