@@ -1,13 +1,20 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import SearchBar from '../components/SearchBar';
 import BookCard from '../components/BookCard';
-import { searchBooks } from '../api/client';
+import { searchBooks, getFavorites, addFavorite, removeFavorite } from '../api/client';
 
 export default function SearchPage() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [query, setQuery] = useState('');
+  const [favoritedIds, setFavoritedIds] = useState(new Set());
+
+  useEffect(() => {
+    getFavorites()
+      .then((data) => setFavoritedIds(new Set(data.items.map((b) => b.id))))
+      .catch(() => {});
+  }, []);
 
   async function handleSearch(q) {
     setQuery(q);
@@ -20,6 +27,33 @@ export default function SearchPage() {
       setError(err.message);
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function handleToggleFavorite(book) {
+    const isFavorited = favoritedIds.has(book.id);
+
+    setFavoritedIds((prev) => {
+      const next = new Set(prev);
+      if (isFavorited) next.delete(book.id);
+      else next.add(book.id);
+      return next;
+    });
+
+    try {
+      if (isFavorited) {
+        await removeFavorite(book.id);
+      } else {
+        await addFavorite(book);
+      }
+    } catch (err) {
+      setFavoritedIds((prev) => {
+        const next = new Set(prev);
+        if (isFavorited) next.add(book.id);
+        else next.delete(book.id);
+        return next;
+      });
+      setError('Could not update wishlist, please try again.');
     }
   }
 
@@ -40,7 +74,12 @@ export default function SearchPage() {
       )}
       <div className="flex flex-col gap-4">
         {items.map((book) => (
-          <BookCard key={book.id} book={book} isFavorited={false} onToggleFavorite={() => {}} />
+          <BookCard
+            key={book.id}
+            book={book}
+            isFavorited={favoritedIds.has(book.id)}
+            onToggleFavorite={handleToggleFavorite}
+          />
         ))}
       </div>
     </div>
