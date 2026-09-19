@@ -15,8 +15,16 @@ function normalizeVolume(volume) {
   };
 }
 
-async function searchBooks({ q, startIndex, maxResults, fetchImpl = fetch }) {
-  const url = `${GOOGLE_BOOKS_BASE_URL}?q=${encodeURIComponent(q)}&startIndex=${startIndex}&maxResults=${maxResults}`;
+async function searchBooks({
+  q,
+  startIndex,
+  maxResults,
+  fetchImpl = fetch,
+  apiKey = process.env.GOOGLE_BOOKS_API_KEY,
+}) {
+  const params = new URLSearchParams({ q, startIndex, maxResults });
+  if (apiKey) params.set('key', apiKey);
+  const url = `${GOOGLE_BOOKS_BASE_URL}?${params}`;
 
   let response;
   try {

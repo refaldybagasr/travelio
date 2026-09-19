@@ -96,4 +96,28 @@ describe('searchBooks', () => {
       searchBooks({ q: 'test', startIndex: 0, maxResults: 20, fetchImpl })
     ).rejects.toThrow(GoogleBooksError);
   });
+
+  it('includes the API key in the request URL when provided', async () => {
+    let capturedUrl;
+    const fetchImpl = async (url) => {
+      capturedUrl = url;
+      return { ok: true, json: async () => ({ totalItems: 0, items: [] }) };
+    };
+
+    await searchBooks({ q: 'test', startIndex: 0, maxResults: 20, fetchImpl, apiKey: 'MY_KEY' });
+
+    expect(capturedUrl).toContain('key=MY_KEY');
+  });
+
+  it('omits the key parameter when no API key is provided', async () => {
+    let capturedUrl;
+    const fetchImpl = async (url) => {
+      capturedUrl = url;
+      return { ok: true, json: async () => ({ totalItems: 0, items: [] }) };
+    };
+
+    await searchBooks({ q: 'test', startIndex: 0, maxResults: 20, fetchImpl, apiKey: undefined });
+
+    expect(capturedUrl).not.toContain('key=');
+  });
 });

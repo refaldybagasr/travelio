@@ -47,6 +47,21 @@ docker compose up --build
 - Frontend: http://localhost:3000
 - Backend API: http://localhost:4000
 
+### Optional: Google Books API key
+
+Search works without any key, using Google's shared anonymous quota — but
+that quota can be rate-limited (HTTP 429) depending on network/usage. A
+free API key raises the quota significantly:
+
+1. Create/select a project at [console.cloud.google.com](https://console.cloud.google.com)
+2. Enable **Books API** under APIs & Services → Library
+3. Create a key under APIs & Services → Credentials → Create Credentials → API Key
+
+Then, for Docker: `cp .env.example .env` (repo root) and set
+`GOOGLE_BOOKS_API_KEY=your_key` before running `docker compose up --build`.
+For running without Docker: `export GOOGLE_BOOKS_API_KEY=your_key` before
+starting the backend.
+
 ## Running without Docker
 
 Requires Node.js 20+.

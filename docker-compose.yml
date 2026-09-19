@@ -3,6 +3,8 @@ services:
     build: ./backend
     ports:
       - "4000:4000"
+    environment:
+      - GOOGLE_BOOKS_API_KEY=${GOOGLE_BOOKS_API_KEY:-}
   frontend:
     build:
       context: ./frontend
