@@ -4,11 +4,12 @@ class GoogleBooksError extends Error {}
 
 function normalizeVolume(volume) {
   const info = volume.volumeInfo || {};
+  const rawThumbnail = info.imageLinks && info.imageLinks.thumbnail;
   return {
     id: volume.id,
     title: info.title || 'Untitled',
     authors: info.authors || [],
-    thumbnail: (info.imageLinks && info.imageLinks.thumbnail) || null,
+    thumbnail: rawThumbnail ? rawThumbnail.replace(/^http:\/\//, 'https://') : null,
     averageRating: typeof info.averageRating === 'number' ? info.averageRating : null,
     ratingsCount: typeof info.ratingsCount === 'number' ? info.ratingsCount : null,
   };

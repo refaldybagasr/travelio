@@ -8,10 +8,18 @@ function createFavoritesRouter(store) {
   });
 
   router.post('/', (req, res) => {
-    const item = req.body;
-    if (!item || !item.id) {
+    const body = req.body || {};
+    if (!body.id) {
       return res.status(400).json({ error: 'id is required' });
     }
+    const item = {
+      id: body.id,
+      title: body.title ?? 'Untitled',
+      authors: Array.isArray(body.authors) ? body.authors : [],
+      thumbnail: body.thumbnail ?? null,
+      averageRating: typeof body.averageRating === 'number' ? body.averageRating : null,
+      ratingsCount: typeof body.ratingsCount === 'number' ? body.ratingsCount : null,
+    };
     store.set(item.id, item);
     res.status(201).json({ item });
   });

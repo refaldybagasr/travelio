@@ -17,7 +17,30 @@ describe('favorites routes', () => {
       .post('/api/favorites')
       .send({ id: 'a', title: 'Book A' });
     expect(res.status).toBe(201);
-    expect(res.body.item).toEqual({ id: 'a', title: 'Book A' });
+    expect(res.body.item).toEqual({
+      id: 'a',
+      title: 'Book A',
+      authors: [],
+      thumbnail: null,
+      averageRating: null,
+      ratingsCount: null,
+    });
+  });
+
+  it('POST normalizes malformed fields (missing/invalid authors, rating) to safe defaults', async () => {
+    const app = buildApp(new LruStore({ capacity: 10 }));
+    const res = await request(app)
+      .post('/api/favorites')
+      .send({ id: 'b', authors: 'not-an-array', averageRating: 'bad', ratingsCount: 'bad' });
+    expect(res.status).toBe(201);
+    expect(res.body.item).toEqual({
+      id: 'b',
+      title: 'Untitled',
+      authors: [],
+      thumbnail: null,
+      averageRating: null,
+      ratingsCount: null,
+    });
   });
 
   it('POST without an id returns 400', async () => {

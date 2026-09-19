@@ -14,6 +14,7 @@ export default function SearchPage() {
   const [error, setError] = useState(null);
   const [query, setQuery] = useState('');
   const [favoritedIds, setFavoritedIds] = useState(new Set());
+  const [nextIndex, setNextIndex] = useState(0);
 
   useEffect(() => {
     getFavorites()
@@ -29,6 +30,7 @@ export default function SearchPage() {
       const data = await searchBooks(q, 0, PAGE_SIZE);
       setItems(data.items);
       setTotalItems(data.totalItems);
+      setNextIndex(PAGE_SIZE);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -40,9 +42,13 @@ export default function SearchPage() {
     setLoadingMore(true);
     setError(null);
     try {
-      const data = await searchBooks(query, items.length, PAGE_SIZE);
-      setItems((prev) => [...prev, ...data.items]);
+      const data = await searchBooks(query, nextIndex, PAGE_SIZE);
+      setItems((prev) => {
+        const seen = new Set(prev.map((b) => b.id));
+        return [...prev, ...data.items.filter((b) => !seen.has(b.id))];
+      });
       setTotalItems(data.totalItems);
+      setNextIndex((i) => i + PAGE_SIZE);
     } catch (err) {
       setError(err.message);
     } finally {

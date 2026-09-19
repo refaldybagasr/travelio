@@ -10,7 +10,7 @@ export default function BookCard({ book, isFavorited, onToggleFavorite }) {
       />
       <div className="flex-1 flex flex-col">
         <h3 className="font-semibold text-gray-900">{book.title}</h3>
-        <p className="text-sm text-gray-500">{book.authors.join(', ') || 'Unknown author'}</p>
+        <p className="text-sm text-gray-500">{(book.authors || []).join(', ') || 'Unknown author'}</p>
         <div className="mt-2">
           <StarRating averageRating={book.averageRating} ratingsCount={book.ratingsCount} />
         </div>

@@ -42,6 +42,28 @@ describe('searchBooks', () => {
     });
   });
 
+  it('rewrites http thumbnail URLs to https', async () => {
+    const fetchImpl = fakeFetch({
+      ok: true,
+      json: async () => ({
+        totalItems: 1,
+        items: [
+          {
+            id: 'abc',
+            volumeInfo: {
+              title: 'Mixed Content Book',
+              imageLinks: { thumbnail: 'http://books.google.com/books/content?id=abc' },
+            },
+          },
+        ],
+      }),
+    });
+
+    const result = await searchBooks({ q: 'test', startIndex: 0, maxResults: 20, fetchImpl });
+
+    expect(result.items[0].thumbnail).toBe('https://books.google.com/books/content?id=abc');
+  });
+
   it('maps missing rating fields to null', async () => {
     const fetchImpl = fakeFetch({
       ok: true,
