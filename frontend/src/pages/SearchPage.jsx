@@ -95,7 +95,7 @@ export default function SearchPage() {
         </div>
       )}
       {loading && <p className="text-gray-500">Loading...</p>}
-      {!loading && query && items.length === 0 && (
+      {!loading && !error && query && items.length === 0 && (
         <p className="text-gray-500">No results found for "{query}".</p>
       )}
       <div className="flex flex-col gap-4">

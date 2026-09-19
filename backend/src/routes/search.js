@@ -23,7 +23,8 @@ function createSearchRouter({ cache, searchBooks }) {
       cache.set(cacheKey, result);
       return res.json(result);
     } catch (err) {
-      return res.status(502).json({ error: err.message });
+      console.error('Search upstream error:', err.message);
+      return res.status(502).json({ error: "We couldn't reach Google Books right now. Please try again in a moment." });
     }
   });
 
