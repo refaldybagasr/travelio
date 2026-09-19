@@ -27,6 +27,6 @@ export async function addFavorite(book) {
 }
 
 export async function removeFavorite(id) {
-  const res = await fetch(`${API_URL}/api/favorites/${id}`, { method: 'DELETE' });
-  if (!res.ok && res.status !== 204) throw new Error('Failed to remove favorite');
+  const res = await fetch(`${API_URL}/api/favorites/${encodeURIComponent(id)}`, { method: 'DELETE' });
+  if (!res.ok) throw new Error('Failed to remove favorite');
 }

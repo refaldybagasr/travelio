@@ -63,10 +63,13 @@ Runs on http://localhost:4000.
 ```bash
 cd frontend
 npm install
+cp .env.example .env
 npm run dev
 ```
 Runs on http://localhost:5173 by default, and reads the backend URL from
-`frontend/.env` (`VITE_API_URL`).
+`frontend/.env` (`VITE_API_URL`). This file is git-ignored — copy it from
+`.env.example` as shown above. It's optional: `frontend/src/api/client.js`
+already falls back to `http://localhost:4000` if `.env` is omitted.
 
 ## Backend API
 
